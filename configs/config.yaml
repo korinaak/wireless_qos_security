@@ -1,0 +1,69 @@
+# Network Configuration
+network:
+  n_users: 10
+  n_rbs: 20
+  max_steps_per_episode: 100
+  bandwidth_per_rb: 180000  # Hz
+  tx_power: 23  # dBm
+  noise_power_dbm: -104  # dBm
+  user_distance_range: [10, 500]  # meters
+
+# PPO Hyperparameters
+ppo:
+  learning_rate: 0.0003
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+
+# Training Configuration
+training:
+  total_timesteps: 500000
+  eval_frequency: 10000
+  n_eval_episodes: 20
+  save_frequency: 50000
+  log_dir: "results/logs"
+  model_save_path: "results/models"
+
+# Attack Configuration
+attack:
+  attack_type: "cqi_falsification"  # Options: cqi_falsification, random_noise, targeted
+  attack_probability: 0.3  # Fraction of malicious users
+  noise_magnitude: 0.5  # Perturbation strength [0, 1]
+  attack_start_step: 0  # When to start attacking
+
+# Defense Configuration
+defense:
+  method: "adversarial_training"  # Options: none, adversarial_training, anomaly_detection, input_validation
+  adversarial_training:
+    poison_ratio: 0.2  # Fraction of poisoned samples during training
+  anomaly_detection:
+    threshold: 2.5  # Standard deviations for outlier detection
+    window_size: 10  # Historical window for statistics
+  input_validation:
+    cqi_bounds: [0.0, 1.0]
+    buffer_bounds: [0.0, 1.0]
+    rate_limit: 0.1  # Max change per step
+
+# Evaluation Configuration
+evaluation:
+  scenarios:
+    - name: "baseline"
+      attack_enabled: false
+      defense_enabled: false
+    - name: "under_attack"
+      attack_enabled: true
+      defense_enabled: false
+    - name: "with_defense"
+      attack_enabled: true
+      defense_enabled: true
+  metrics:
+    - throughput
+    - latency
+    - fairness
+    - packet_loss
