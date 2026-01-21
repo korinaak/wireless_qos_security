@@ -35,11 +35,9 @@ class AdversarialTrainer(gym.Wrapper):
             poison_magnitude: Perturbation strength
             attack_type: Type of attack to defend against
         """
-        # --- FIX: Initialize the gym.Wrapper parent class ---
+        # Initialize the gym.Wrapper parent class
         super().__init__(base_env)
-        # ----------------------------------------------------
 
-        self.base_env = base_env
         self.poison_probability = poison_probability
         self.poison_magnitude = poison_magnitude
         self.attack_type = attack_type
@@ -48,6 +46,19 @@ class AdversarialTrainer(gym.Wrapper):
         self.n_clean_samples = 0
         self.n_poisoned_samples = 0
     
+    # --- ADDED: Explicitly expose environment properties ---
+    @property
+    def n_users(self):
+        """Forward n_users from the base environment"""
+        return self.env.n_users
+
+    @property
+    def n_rbs(self):
+        """Forward n_rbs from the base environment"""
+        # Use getattr in case the base env doesn't have n_rbs (safer)
+        return getattr(self.env, 'n_rbs', None)
+    # -----------------------------------------------------
+
     def _generate_adversarial_state(self, clean_state: np.ndarray) -> np.ndarray:
         """
         Generate adversarial perturbation
@@ -86,7 +97,7 @@ class AdversarialTrainer(gym.Wrapper):
         Environment step with potential adversarial injection
         """
         # Execute action in base environment
-        state, reward, terminated, truncated, info = self.base_env.step(action)
+        state, reward, terminated, truncated, info = self.env.step(action)
         
         # With probability p, replace state with adversarial version
         if np.random.random() < self.poison_probability:
@@ -101,7 +112,7 @@ class AdversarialTrainer(gym.Wrapper):
     
     def reset(self, **kwargs):
         """Reset environment"""
-        return self.base_env.reset(**kwargs)
+        return self.env.reset(**kwargs)
     
     def get_statistics(self) -> dict:
         """Get training statistics"""
@@ -111,14 +122,6 @@ class AdversarialTrainer(gym.Wrapper):
             'poisoned_samples': self.n_poisoned_samples,
             'poison_ratio': self.n_poisoned_samples / total if total > 0 else 0
         }
-    
-    @property
-    def observation_space(self):
-        return self.base_env.observation_space
-    
-    @property
-    def action_space(self):
-        return self.base_env.action_space
 
 
 class RobustPPOTrainer:
@@ -138,7 +141,7 @@ class RobustPPOTrainer:
             ppo_model: PPO model instance
             adversarial_config: Dict with poison_prob, magnitude, etc.
         """
-        self.base_env = env
+        self.env = env
         self.ppo_model = ppo_model
         
         # Wrap environment with adversarial trainer
@@ -197,6 +200,9 @@ if __name__ == "__main__":
     
     print("\n--- Testing Adversarial Environment ---")
     state, info = adv_env.reset()
+    
+    # Check if n_users is accessible
+    print(f"Checking n_users attribute: {adv_env.n_users}")
     
     for step in range(10):
         action = adv_env.action_space.sample()
