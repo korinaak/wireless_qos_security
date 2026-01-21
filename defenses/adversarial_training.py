@@ -14,7 +14,7 @@ from typing import Callable, Optional
 import gymnasium as gym
 
 
-class AdversarialTrainer:
+class AdversarialTrainer(gym.Wrapper):
     """
     Adversarial Training wrapper for environment
     
@@ -35,6 +35,10 @@ class AdversarialTrainer:
             poison_magnitude: Perturbation strength
             attack_type: Type of attack to defend against
         """
+        # --- FIX: Initialize the gym.Wrapper parent class ---
+        super().__init__(base_env)
+        # ----------------------------------------------------
+
         self.base_env = base_env
         self.poison_probability = poison_probability
         self.poison_magnitude = poison_magnitude
