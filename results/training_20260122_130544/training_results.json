@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "mean_reward": 2740.7178851393187,
+    "std_reward": 35.83539486650645,
+    "mean_throughput": 22.050207756092682,
+    "std_throughput": 0.1220846767505727,
+    "mean_fairness": 0.9575816098425903,
+    "std_fairness": 0.0034733760013665217,
+    "mean_latency": 23.350641034992947,
+    "std_latency": 1.4414184047602405
+  },
+  "attack": {
+    "mean_reward": 1685.1334323645767,
+    "std_reward": 253.97794495731065,
+    "mean_throughput": 21.53676794399374,
+    "std_throughput": 0.6240191268611505,
+    "mean_fairness": 0.25952604990405187,
+    "std_fairness": 0.06096504170160902,
+    "mean_latency": 615.5686757386795,
+    "std_latency": 49.950467791768105
+  },
+  "robust": {
+    "mean_reward": 1854.1912384303578,
+    "mean_throughput": 21.635615287484924,
+    "mean_fairness": 0.3359034479563743,
+    "mean_latency": 550.3497116838851
+  }
+}
