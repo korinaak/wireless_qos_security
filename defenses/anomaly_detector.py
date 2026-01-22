@@ -110,7 +110,8 @@ class AnomalyDetector:
         std = np.std(history)
         
         if std < 1e-6:  # Avoid division by zero
-            return False
+            # If variance is very low, check for large deviations from mean
+            return abs(value - mean) > 0.2
         
         z_score = abs(value - mean) / std
         return z_score > self.threshold

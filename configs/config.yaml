@@ -23,32 +23,32 @@ ppo:
 
 # Training Configuration
 training:
-  total_timesteps: 500000
+  total_timesteps: 300000  # Increased for better convergence
   eval_frequency: 10000
-  n_eval_episodes: 20
+  n_eval_episodes: 50  # More episodes for statistical significance
   save_frequency: 50000
   log_dir: "results/logs"
   model_save_path: "results/models"
 
-# Attack Configuration
+# Attack Configuration - MORE AGGRESSIVE
 attack:
-  attack_type: "cqi_falsification"  # Options: cqi_falsification, random_noise, targeted
-  attack_probability: 0.3  # Fraction of malicious users
-  noise_magnitude: 0.5  # Perturbation strength [0, 1]
-  attack_start_step: 0  # When to start attacking
+  attack_type: "cqi_falsification"
+  attack_probability: 0.4  # 40% malicious users (was 0.3)
+  noise_magnitude: 0.7  # Stronger perturbation (was 0.5)
+  attack_start_step: 0
 
 # Defense Configuration
 defense:
-  method: "adversarial_training"  # Options: none, adversarial_training, anomaly_detection, input_validation
+  method: "adversarial_training"
   adversarial_training:
-    poison_ratio: 0.2  # Fraction of poisoned samples during training
+    poison_ratio: 0.3  # Increased from 0.2
   anomaly_detection:
-    threshold: 2.5  # Standard deviations for outlier detection
-    window_size: 10  # Historical window for statistics
+    threshold: 2.0  # More sensitive (was 2.5)
+    window_size: 10
   input_validation:
     cqi_bounds: [0.0, 1.0]
     buffer_bounds: [0.0, 1.0]
-    rate_limit: 0.1  # Max change per step
+    rate_limit: 0.15  # Allow slightly larger changes (was 0.1)
 
 # Evaluation Configuration
 evaluation:
