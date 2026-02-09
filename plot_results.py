@@ -39,7 +39,7 @@ def plot_performance_comparison(results, output_dir):
     """
     scenarios = {
         'baseline_clean': 'Baseline\n(No Attack)',
-        'baseline_attack': 'Baseline\n(Under Attack)',
+        'trained_under_attack': 'Baseline\n(Under Attack)',
         'robust_attack': 'Robust PPO\n(Under Attack)'
     }
     
@@ -86,12 +86,12 @@ def plot_attack_impact(results, output_dir):
     """
     Visualize the impact of attacks
     """
-    if 'baseline_clean' not in results or 'baseline_attack' not in results:
+    if 'baseline_clean' not in results or 'trained_under_attack' not in results:
         print("Skipping attack impact plot (missing data)")
         return
     
     baseline = results['baseline_clean']
-    attacked = results['baseline_attack']
+    attacked = results['trained_under_attack']
     
     metrics = ['mean_throughput', 'mean_fairness', 'mean_latency']
     metric_names = ['Throughput\n(Mbps)', 'Fairness\nIndex', 'Latency\n(ms)']
@@ -138,11 +138,11 @@ def plot_defense_effectiveness(results, output_dir):
     """
     Show defense recovery performance
     """
-    if 'baseline_attack' not in results or 'robust_attack' not in results:
+    if 'trained_under_attack' not in results or 'robust_attack' not in results:
         print("Skipping defense effectiveness plot (missing data)")
         return
     
-    attacked = results['baseline_attack']
+    attacked = results['trained_under_attack']
     defended = results['robust_attack']
     baseline = results.get('baseline_clean', attacked)
     
@@ -188,7 +188,7 @@ def plot_detailed_metrics(results, output_dir):
     """
     scenarios_to_plot = [
         ('baseline_clean', 'Baseline\n(Clean)'),
-        ('baseline_attack', 'Baseline\n(Attack)'),
+        ('trained_under_attack', 'Baseline\n(Attack)'),
         ('robust_attack', 'Robust\n(Attack)')
     ]
     
@@ -249,9 +249,9 @@ def create_summary_table(results, output_dir):
         "\\hline"
     ]
     
-    if 'baseline_clean' in results and 'baseline_attack' in results and 'robust_attack' in results:
+    if 'baseline_clean' in results and 'trained_under_attack' in results and 'robust_attack' in results:
         baseline = results['baseline_clean']
-        attacked = results['baseline_attack']
+        attacked = results['trained_under_attack']
         robust = results['robust_attack']
         
         # Throughput
